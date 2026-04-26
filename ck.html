@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NISAN OFFICIAL | ব্ল্যাক 3D পোর্টফোলিও</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000000;
+            color: #00ffcc;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+        
+        /* 3D Canvas Background */
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Glass Navbar - Pure Black Theme */
+        .navbar {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            padding: 18px 0;
+            border-bottom: 1px solid #00ffcc;
+            z-index: 100;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+        }
+        
+        .nav-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffcc, #ff00cc, #00ffcc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 5px #00ffcc); }
+            50% { filter: drop-shadow(0 0 20px #ff00cc); }
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 600;
+            color: #00ffcc;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
+        
+        .nav-links a:hover {
+            color: #ff00cc;
+            text-shadow: 0 0 10px #ff00cc;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 80px 0 60px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+        
+        .hero-content {
+            flex: 1;
+        }
+        
+        .hero-badge {
+            background: rgba(0, 255, 204, 0.15);
+            border: 1px solid #00ffcc;
+            color: #00ffcc;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            color: #00ffcc;
+        }
+        
+        .hero-highlight {
+            background: linear-gradient(120deg, #00ffcc, #ff00cc, #00ffcc);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: gradientShift 3s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(30deg); }
+        }
+        
+        .hero-desc {
+            font-size: 1.2rem;
+            color: #00ccaa;
+            max-width: 500px;
+            margin-bottom: 32px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #00ffcc, #ff00cc);
+            color: #000000;
+            padding: 12px 28px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 255, 204, 0.5);
+        }
+        
+        .btn-outline {
+            border: 1.5px solid #00ffcc;
+            padding: 12px 28px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            color: #00ffcc;
+            background: rgba(0, 255, 204, 0.05);
+            transition: 0.3s;
+        }
+        
+        .btn-outline:hover {
+            background: rgba(0, 255, 204, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+        }
+        
+        .avatar-frame {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.2), rgba(255, 0, 204, 0.2));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #00ffcc;
+            animation: borderGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes borderGlow {
+            0%, 100% { border-color: #00ffcc; box-shadow: 0 0 20px #00ffcc; }
+            50% { border-color: #ff00cc; box-shadow: 0 0 40px #ff00cc; }
+        }
+        
+        .avatar-frame i {
+            font-size: 130px;
+            color: #00ffcc;
+            filter: drop-shadow(0 0 20px #00ffcc);
+        }
+        
+        /* Sections */
+        .section {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 40px;
+            margin: 50px 0;
+            border: 1px solid rgba(0, 255, 204, 0.4);
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.1);
+        }
+        
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+            color: #00ffcc;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            width: 70%;
+            height: 4px;
+            background: linear-gradient(90deg, #00ffcc, #ff00cc, #00ffcc);
+            border-radius: 4px;
+        }
+        
+        /* Skills */
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        
+        .skill-card {
+            background: rgba(0, 255, 204, 0.1);
+            padding: 10px 26px;
+            border-radius: 60px;
+            font-weight: 600;
+            border: 1px solid rgba(0, 255, 204, 0.4);
+            transition: 0.3s;
+            color: #00ffcc;
+        }
+        
+        .skill-card:hover {
+            background: rgba(0, 255, 204, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px #00ffcc;
+            color: #000000;
+        }
+        
+        /* Projects */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .project-card {
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            transition: 0.3s;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-8px);
+            border-color: #00ffcc;
+            box-shadow: 0 10px 30px rgba(0, 255, 204, 0.3);
+            background: rgba(0, 255, 204, 0.1);
+        }
+        
+        .project-icon {
+            font-size: 2.5rem;
+            color: #00ffcc;
+            margin-bottom: 18px;
+        }
+        
+        .project-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #00ffcc;
+        }
+        
+        .project-card p {
+            color: #00ccaa;
+        }
+        
+        .project-tag {
+            background: rgba(0, 255, 204, 0.2);
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #00ffcc;
+            display: inline-block;
+            margin: 14px 0 12px;
+        }
+        
+        .project-link {
+            text-decoration: none;
+            font-weight: 700;
+            color: #00ffcc;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.3s;
+        }
+        
+        .project-link:hover {
+            gap: 12px;
+            text-shadow: 0 0 10px #00ffcc;
+            color: #ff00cc;
+        }
+        
+        /* Contact */
+        .contact-section {
+            text-align: center;
+        }
+        
+        .contact-section p {
+            color: #00ccaa;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            margin: 30px 0 20px;
+            flex-wrap: wrap;
+        }
+        
+        .social-links a {
+            color: #00ffcc;
+            font-size: 2rem;
+            transition: 0.3s;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 255, 204, 0.1);
+            border-radius: 50%;
+            border: 1px solid #00ffcc;
+        }
+        
+        .social-links a:hover {
+            color: #000000;
+            background: #00ffcc;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #00ffcc;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            border-top: 1px solid rgba(0, 255, 204, 0.3);
+            color: #00ccaa;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 2.2rem; }
+            .nav-flex { flex-direction: column; gap: 15px; }
+            .section { padding: 25px; }
+            .avatar-frame { width: 220px; height: 220px; }
+            .avatar-frame i { font-size: 90px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 3D Background Canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- Background Music -->
+<audio id="bg-music" src="https://files.catbox.moe/7i7ef4.mp4" loop></audio>
+
+<!-- Three.js -->
+<script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+<!-- GSAP -->
+<script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+
+<!-- Navbar -->
+<div class="navbar">
+    <div class="container nav-flex">
+        <div class="logo">🖤 NISAN OFFICIAL</div>
+        <ul class="nav-links">
+            <li><a href="#">হোম</a></li>
+            <li><a href="#skills">দক্ষতা</a></li>
+            <li><a href="#projects">প্রজেক্ট</a></li>
+            <li><a href="#contact">যোগাযোগ</a></li>
+        </ul>
+    </div>
+</div>
+
+<main>
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <span class="hero-badge"><i class="fas fa-crown"></i> NISAN OFFICIAL | ব্ল্যাক 3D ভিশন</span>
+                <h1>ক্রিয়েটিভ ডিজাইন <br> <span class="hero-highlight">এবং কোডিং</span> এর ভবিষ্যৎ</h1>
+                <p class="hero-desc">আমি নিসান — 3D ভিজুয়াল, অডিও রিঅ্যাক্টিভ ইফেক্ট এবং মডার্ন ওয়েব এক্সপেরিয়েন্স ক্রিয়েটর।</p>
+                <div class="btn-group">
+                    <a href="#projects" class="btn-primary"><i class="fas fa-rocket"></i> প্রজেক্ট দেখুন</a>
+                    <a href="#contact" class="btn-outline"><i class="fas fa-paper-plane"></i> যোগাযোগ</a>
+                </div>
+            </div>
+            <div class="avatar-frame">
+                <i class="fas fa-user-astronaut"></i>
+            </div>
+        </section>
+
+        <!-- Skills -->
+        <section id="skills" class="section">
+            <h2 class="section-title">🧠 NISAN এর দক্ষতা</h2>
+            <div class="skills-grid">
+                <span class="skill-card">HTML5 & CSS3</span>
+                <span class="skill-card">Three.js / 3D</span>
+                <span class="skill-card">JavaScript ES6+</span>
+                <span class="skill-card">React.js</span>
+                <span class="skill-card">Next.js</span>
+                <span class="skill-card">WebGL / Shaders</span>
+                <span class="skill-card">GSAP Animation</span>
+                <span class="skill-card">Web Audio API</span>
+                <span class="skill-card">Git & GitHub</span>
+            </div>
+        </section>
+
+        <!-- Projects -->
+        <section id="projects" class="section">
+            <h2 class="section-title">📁 NISAN OFFICIAL প্রজেক্টস</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-icon"><i class="fas fa-cube"></i></div>
+                    <h3>3D পোর্টফোলিও</h3>
+                    <span class="project-tag">Three.js + Audio API</span>
+                    <p>ইন্টারেক্টিভ 3D ব্যাকগ্রাউন্ড, মিউজিক রিঅ্যাক্টিভ পার্টিকেল এবং লাইটনিং ইফেক্ট।</p>
+                    <a href="#" class="project-link">লাইভ দেখুন →</a>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>বিজনেস ড্যাশবোর্ড</h3>
+                    <span class="project-tag">Next.js + 3D Charts</span>
+                    <p>রিয়েল টাইম ডাটা, 3D ভিজুয়ালাইজেশন এবং অ্যানিমেটেড চার্ট।</p>
+                    <a href="#" class="project-link">লাইভ দেখুন →</a>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon"><i class="fas fa-music"></i></div>
+                    <h3>মিউজিক ভিজুয়ালাইজার</h3>
+                    <span class="project-tag">Web Audio + Three.js</span>
+                    <p>অডিও রিঅ্যাক্টিভ 3D ভিজুয়াল ইফেক্ট এবং ইমার্সিভ এক্সপেরিয়েন্স।</p>
+                    <a href="#" class="project-link">লাইভ দেখুন →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact -->
+        <section id="contact" class="section contact-section">
+            <h2 style="font-size: 1.8rem; margin-bottom: 20px; color: #00ffcc;">📢 আসুন সংযুক্ত হই</h2>
+            <p style="margin-bottom: 20px;">ইমেইল: <strong style="color: #00ffcc;">nisan@official.com</strong> | ফোন: <strong style="color: #00ffcc;">+৮৮০ ১৯XXXXXXX</strong></p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+            <p style="margin-top: 20px;">📍 ঢাকা, বাংলাদেশ</p>
+        </section>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <p>© ২০২৫ <strong style="color: #00ffcc;">NISAN OFFICIAL</strong> — সব অধিকার সংরক্ষিত | ব্ল্যাক 3D ইনোভেশন ল্যাব</p>
+    </div>
+</footer>
+
+<script>
+// Three.js 3D Background with Audio Reactivity
+let scene, camera, renderer, instancedMesh, analyzer;
+const dummy = new THREE.Object3D();
+const mouse = new THREE.Vector2();
+
+function initThreeScene() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000); // Black background
+
+    camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+    );
+    camera.position.z = 50;
+
+    renderer = new THREE.WebGLRenderer({
+        canvas: document.getElementById("bg-canvas"),
+        alpha: false,
+        antialias: true
+    });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 1); // Black clear color
+
+    /* Particles - Neon Colors */
+    const COUNT = window.innerWidth < 768 ? 4000 : 10000;
+    const geometry = new THREE.IcosahedronGeometry(0.12, 0);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ffcc });
+
+    instancedMesh = new THREE.InstancedMesh(geometry, material, COUNT);
+
+    for (let i = 0; i < COUNT; i++) {
+        dummy.position.set(
+            (Math.random() - 0.5) * 120,
+            (Math.random() - 0.5) * 120,
+            (Math.random() - 0.5) * 120
+        );
+        dummy.updateMatrix();
+        instancedMesh.setMatrixAt(i, dummy.matrix);
+    }
+
+    scene.add(instancedMesh);
+
+    /* Audio Analyzer */
+    const audio = document.getElementById("bg-music");
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioContext.createMediaElementSource(audio);
+    analyzer = audioContext.createAnalyser();
+
+    source.connect(analyzer);
+    analyzer.connect(audioContext.destination);
+    analyzer.fftSize = 256;
+
+    /* Mobile autoplay fix */
+    document.body.addEventListener("pointerdown", () => {
+        if (audioContext.state === "suspended") audioContext.resume();
+        if (audio.paused) audio.play();
+    });
+
+    document.body.addEventListener("pointerdown", onPointerDown);
+
+    animate();
+}
+
+function onPointerDown(e) {
+    const vec = new THREE.Vector3(
+        (e.clientX / window.innerWidth) * 2 - 1,
+        -(e.clientY / window.innerHeight) * 2 + 1,
+        0.5
+    );
+    vec.unproject(camera);
+
+    for (let i = 0; i < 5 + Math.random() * 5; i++) {
+        createLightning(vec);
+    }
+}
+
+function createLightning(origin) {
+    const points = [];
+    let current = origin.clone();
+    points.push(current.clone());
+
+    let dir = new THREE.Vector3(
+        Math.random() - 0.5,
+        Math.random() - 0.5,
+        Math.random() - 0.5
+    ).normalize();
+
+    for (let i = 0; i < 12; i++) {
+        current = current.clone().add(dir.clone().multiplyScalar(2));
+        current.x += (Math.random() - 0.5) * 2;
+        current.y += (Math.random() - 0.5) * 2;
+        current.z += (Math.random() - 0.5) * 2;
+        points.push(current.clone());
+    }
+
+    const geo = new THREE.BufferGeometry().setFromPoints(points);
+    const mat = new THREE.LineBasicMaterial({
+        color: instancedMesh.material.color,
+        transparent: true,
+        opacity: 1,
+        blending: THREE.AdditiveBlending
+    });
+
+    const line = new THREE.Line(geo, mat);
+    scene.add(line);
+
+    gsap.to(mat, {
+        opacity: 0,
+        duration: 0.6,
+        onComplete: () => {
+            scene.remove(line);
+            geo.dispose();
+            mat.dispose();
+        }
+    });
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    const freq = new Uint8Array(analyzer.frequencyBinCount);
+    analyzer.getByteFrequencyData(freq);
+
+    const time = performance.now() * 0.001;
+
+    for (let i = 0; i < instancedMesh.count; i++) {
+        instancedMesh.getMatrixAt(i, dummy.matrix);
+        dummy.matrix.decompose(dummy.position, dummy.quaternion, dummy.scale);
+
+        const f = freq[i % freq.length] / 255;
+        const s = 1 + f * 0.5;
+
+        dummy.scale.setScalar(s);
+        dummy.position.y += Math.sin(time + dummy.position.x) * f * 0.3;
+
+        dummy.updateMatrix();
+        instancedMesh.setMatrixAt(i, dummy.matrix);
+    }
+
+    instancedMesh.instanceMatrix.needsUpdate = true;
+    instancedMesh.rotation.y = time * 0.05;
+
+    renderer.render(scene, camera);
+}
+
+/* Dynamic color cycle - Neon colors only */
+const colors = ["#00ffcc", "#ff00cc", "#00ff88", "#ff6600", "#aa44ff"];
+let idx = 0;
+
+setInterval(() => {
+    idx = (idx + 1) % colors.length;
+    if (instancedMesh) instancedMesh.material.color.set(colors[idx]);
+}, 2000);
+
+window.addEventListener("load", initThreeScene);
+
+window.addEventListener("resize", () => {
+    if (camera && renderer) {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+});
+</script>
+
+</body>
+</html>
